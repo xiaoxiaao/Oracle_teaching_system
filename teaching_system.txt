@@ -1,0 +1,763 @@
+/*其它对象名如用户、表、视图、过程、触发器等按规则
+$$_***_????,其中$$为对象类型标识码，如用户取名u,表取t,视图V，过程取P，触发器取TG；
+????为专业+学号后3位，与文件名的命名规则类同。
+***可自己命名，不作强制要求，可以用英文简写法，也可以用中文拼音首字母。
+如T_STUD_D202, p_sumscore_W203,tg_STUD_ST_J508。
+*/
+--实验一
+--1.创建用户
+create user u_jsj_114 identified by u123456;
+--grant resource,connect to u_jsj_114;
+grant dba to u_jsj_114;
+connect u_jsj_114/u123456;
+
+--2.建立表
+create table t_major_j114
+(
+mno varchar(10) primary key,
+mname varchar(20),
+loc varchar(10)
+constraint ck_loc check (loc = '主校区'or loc ='南校区'or loc = '新校区'or loc ='铁道校区'or loc ='湘雅校区'),
+mdean varchar(10)
+);
+
+create table t_stud_j114
+(
+sno varchar(10) primary key,
+sname varchar(10),
+sex varchar(5)
+constraint ck_sex check(sex='男' or sex='女' or sex='其他'),
+tel varchar(12),
+email varchar(20)
+constraint ck_em check (email like '%@%.%'),
+birthday date
+constraint ck_bir check ((to_char('yyymmdd'))>='19990731' ),
+mno varchar(10),
+majorno varchar(2),
+constraint fk_ms foreign key (majorno) references t_major_j114(mno),
+constraint fk_mno check(majorno= substr(sno,3,2))
+);
+
+--3.插入数据样本
+insert into t_major_j114 values ('01','物联网工程','新校区','双羽');
+insert into t_major_j114 values ('02','计算机科学与技术','新校区','刘逸峰');
+insert into t_major_j114 values ('03','数据科学与大数据技术','新校区','黄华龙');
+
+insert into t_stud_j114 values('0902160101','x1','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160102','x2','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160103','x3','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160104','x4','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160105','x5','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160106','x6','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160107','x7','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160108','x8','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160109','x9','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+insert into t_stud_j114 values('0902160110','x10','女','1111','123456@qq.com','5-1月-1998','0902160101','02');
+
+insert into t_stud_j114 values('0901160101','m1','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160102','m2','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160103','m3','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160104','m4','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160105','m5','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160106','m6','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160107','m7','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160108','m8','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160109','m9','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+insert into t_stud_j114 values('0901160110','m10','男','1111','123456@qq.com','5-1月-1998','0901160101','01');
+
+insert into t_stud_j114 values('0903160101','h1','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160102','h2','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160103','h3','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160104','h4','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160105','h5','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160106','h6','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160107','h7','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160108','h8','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160109','h9','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+insert into t_stud_j114 values('0903160110','h10','男','1111','123456@qq.com','5-1月-1998','0903160101','03');
+
+--4.为每个学生建立用户，实现权限控制
+--select 'create user u'||sno||' identified by u'|| substr(sno,5)||';' from t_stud_j114;
+create user u0901160101 identified by u160101;
+create user u0901160102 identified by u160102;
+create user u0901160103 identified by u160103;
+create user u0901160104 identified by u160104;
+create user u0901160105 identified by u160105;
+create user u0901160106 identified by u160106;
+create user u0901160107 identified by u160107;
+create user u0901160108 identified by u160108;
+create user u0901160109 identified by u160109;
+create user u0901160110 identified by u160110;
+create user u0902160101 identified by u160101;
+
+create user u0902160102 identified by u160102;
+create user u0902160103 identified by u160103;
+create user u0902160104 identified by u160104;
+create user u0902160105 identified by u160105;
+create user u0902160106 identified by u160106;
+create user u0902160107 identified by u160107;
+create user u0902160108 identified by u160108;
+create user u0902160109 identified by u160109;
+create user u0902160110 identified by u160110;
+create user u0902160114 identified by u160114;
+create user u0903160101 identified by u160101;
+
+create user u0903160102 identified by u160102;
+create user u0903160103 identified by u160103;
+create user u0903160104 identified by u160104;
+create user u0903160105 identified by u160105;
+create user u0903160106 identified by u160106;
+create user u0903160107 identified by u160107;
+create user u0903160108 identified by u160108;
+create user u0903160109 identified by u160109;
+create user u0903160110 identified by u160110;
+
+--select  'grant connect to  u'||sno||';'from t_stud_j114;
+grant connect to  u0901160101;
+grant connect to  u0901160102;
+grant connect to  u0901160103;
+grant connect to  u0901160104;
+grant connect to  u0901160105;
+grant connect to  u0901160106;
+grant connect to  u0901160107;
+grant connect to  u0901160108;
+grant connect to  u0901160109;
+grant connect to  u0901160110;
+grant connect to  u0902160101;
+
+grant connect to  u0902160102;
+grant connect to  u0902160103;
+grant connect to  u0902160104;
+grant connect to  u0902160105;
+grant connect to  u0902160106;
+grant connect to  u0902160107;
+grant connect to  u0902160108;
+grant connect to  u0902160109;
+grant connect to  u0902160110;
+grant connect to  u0902160114;
+grant connect to  u0903160101;
+
+grant connect to  u0903160102;
+grant connect to  u0903160103;
+grant connect to  u0903160104;
+grant connect to  u0903160105;
+grant connect to  u0903160106;
+grant connect to  u0903160107;
+grant connect to  u0903160108;
+grant connect to  u0903160109;
+grant connect to  u0903160110;
+
+--每个学生可查询自己的信息
+create view v_stud_j114 as 
+select *from t_stud_j114 
+where substr(sno,5)= substr(user,2);
+grant select on v_stud_j114 to u0902160114;
+
+--班长可查询本班所有学生信息
+create view v_m_j114 as 
+select *from t_stud_j114
+where substr(sno,5)=substr(user,2)
+or substr(user,2) in (select substr(mno,5) from t_stud_j114);
+grant select on v_m_j114 to u0902160101;
+
+--为每个专业负责建立用户，每个专业负责可查询本专业所有学生信息。
+create user shuang identified by shuang;
+create view v_shuang_j114 as
+select* from t_stud_j114
+where substr(sno,3,1) ='1';
+grant select on v_shuang_j114 to shuang;
+
+create user liu identified by liu;
+create view v_liu_j114 as
+select* from t_stud_j114
+where substr(sno,3,1) ='2';
+grant select on v_liu_j114 to liu;
+
+create user huang identified by huang;
+create view v_huang_j114 as
+select* from t_stud_j114
+where substr(sno,3,1) ='3';
+grant select on v_huang_j114 to huang;
+
+--实验二
+--1.建立考勤表
+create table t_attend_j114
+(
+adate date,
+acondition varchar(10),
+agrade varchar(10),
+sno varchar(10) ,
+mno varchar(10),
+primary key(sno,agrade,adate),
+constraint fk_as foreign key (sno) references t_stud_j114(sno),
+constraint fk_at foreign key (mno) references t_major_j114(mno),
+constraint ck_acondition check(acondition in ('正常','迟到','请假','旷课')),
+constraint ck_agrade check(agrade in('1','2','3','4','5','0'))
+);
+--2.增加数字段
+alter table t_stud_j114 add (sum_evaluation number(10) default 100);
+alter table t_major_j114 add(sum_evaluation number(10) default 100);
+--3.建立个人考勤汇总表和专业考勤表
+create table t_stud_attend_j114
+(
+sno varchar(10) primary key,
+bdate date,
+edate date,
+normal number(5),
+belate number(5),
+truancy number(5),
+vacate number(5),
+subtract number(5)
+);
+
+
+create table t_major_attend
+(
+mano varchar(20) primary key,
+bdate date,
+edate date,
+normal number(5),
+belate number(5),
+truancy number(5),
+vacate number(5),
+subtract number(5)
+);
+
+select 
+
+--4.输入样本
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160114','02');
+
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160101','02');
+insert into t_attend_j114 values('1-1月-2018','迟到','2','0902160102','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160103','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160104','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160105','02');
+insert into t_attend_j114 values('1-1月-2018','旷课','5','0902160106','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160107','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160108','02');
+insert into t_attend_j114 values('1-1月-2018','请假','1','0902160109','02');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0902160110','02');
+
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160101','01');
+insert into t_attend_j114 values('1-1月-2018','旷课','5','0901160102','01');
+insert into t_attend_j114 values('1-1月-2018','请假','1','0901160103','01');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160104','01');
+insert into t_attend_j114 values('1-1月-2018','迟到','3','0901160105','01');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160106','01');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160107','01');
+insert into t_attend_j114 values('1-1月-2018','迟到','3','0901160108','01');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160109','01');
+insert into t_attend_j114 values('1-1月-2018','正常','0','0901160110','01');
+
+insert into t_attend_j114 values('3-6月-2018','正常','0','0903160101','03');
+insert into t_attend_j114 values('3-6月-2018','正常','0','0903160102','03');
+insert into t_attend_j114 values('3-6月-2018','请假','1','0903160103','03');
+insert into t_attend_j114 values('3-6月-2018','请假','1','0903160104','03');
+insert into t_attend_j114 values('3-6月-2018','请假','1','0903160105','03');
+insert into t_attend_j114 values('3-6月-2018','正常','0','0903160106','03');
+insert into t_attend_j114 values('3-6月-2018','旷课','5','0903160107','03');
+insert into t_attend_j114 values('3-6月-2018','正常','0','0903160108','03');
+insert into t_attend_j114 values('3-6月-2018','正常','0','0903160109','03');
+
+
+--5.建立对考勤表进行数据更新的触发器
+create or replace trigger attend_stud_j114
+before insert or update or delete on t_attend_j114
+for each row 
+begin
+    if inserting then
+        if :new.acondition ='旷课' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-5 where :new.sno = t_stud_j114.sno;
+        elsif :new.acondition ='迟到' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-2 where :new.sno = t_stud_j114.sno;
+        elsif :new.acondition ='请假' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-1 where :new.sno = t_stud_j114.sno;
+        end if;
+    end if;
+    if deleting then 
+        if :old.acondition ='旷课' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+5 where :old.sno = t_stud_j114.sno;
+        elsif :old.acondition ='迟到' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+2 where :old.sno = t_stud_j114.sno;
+        elsif :old.acondition ='请假' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+1 where :old.sno = t_stud_j114.sno;
+        end if;
+    end if;
+    if updating then
+        if :old.acondition ='旷课' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+5 where :old.sno = t_stud_j114.sno;
+        elsif :old.acondition ='迟到' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+2 where :old.sno = t_stud_j114.sno;
+        elsif :old.acondition ='请假' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation+1 where :old.sno = t_stud_j114.sno;
+        end if;
+        if :new.acondition ='旷课' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-5 where :new.sno = t_stud_j114.sno;
+        elsif :new.acondition ='迟到' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-2 where :new.sno = t_stud_j114.sno;
+        elsif :new.acondition ='请假' then
+            update  t_stud_j114 set sum_evaluation = sum_evaluation-1 where :new.sno = t_stud_j114.sno;
+        end if;
+    end if;
+end;
+/
+
+--测试触发器效果
+--触发器建立前，所有学生的评分均为默认值100
+--在表t_attend_j114插入新的扣分数据，再查看表 t_stud_j114中的内容
+insert into t_attend_j114 values('3-9月-2018','旷课','5','0903160107','03');
+select sno,sum_evaluation from t_stud_j114 where sno='0903160107';
+
+--6.建立过程
+create or replace procedure p_major_attend
+(
+begindate in date,
+enddate in date,
+class in varchar
+)
+as
+    pnormal number(10);
+    pbelate number(10);
+    ptruancy number(10);
+    pvacate number(10);
+    psubtract number(10);
+begin
+   select count(*) into pnormal from t_attend_j114 
+   where
+   begindate<adate and enddate>adate and acondition ='正常' and class =sno;
+   insert into t_major_attend(mano,bdate,edate,normal) values (class,begindate,enddate,pnormal);
+
+select count(*) into pbelate from t_attend_j114 
+   where
+   begindate<adate and enddate>adate and acondition ='迟到' and class =sno;
+   insert into t_major_attend(mano,bdate,edate,normal) values (class,begindate,enddate,pnormal);
+
+select count(*) into ptruancy from t_attend_j114 
+   where
+   begindate<adate and enddate>adate and acondition ='请假' and class =sno;
+   insert into t_major_attend(mano,bdate,edate,normal) values (class,begindate,enddate,pnormal);
+
+select count(*) into pvacate from t_attend_j114 
+   where
+   begindate<adate and enddate>adate and acondition ='旷课' and class =sno;
+   insert into t_major_attend(mano,bdate,edate,normal) values (class,begindate,enddate,pnormal);
+
+end p_major_attend;
+/
+
+--drop procedure p_major_attend;
+
+
+--实验三
+--1.以常用“名字大全”与“百家姓”数据集为基础，
+--生成不小于1千万条stud记录，要求，姓名的重复率不超过10%，
+--学号以ABCD16EFGH为格式模板，即其中16是固定的，
+--AB为从01到80，CD为从01到90，EF为01到50，GH为01到32；
+--性别中，男、女占比为99%到99.5%。
+--TEL与E-mail不作要求，但不能全空。
+--Birthday要求从‘19940101’到‘19990731’分布。
+--要求记录ORACLE数据文件的大小变化。（需要编制过程）
+
+--imp system/system file =C:\name.dmp full=y
+
+connect system/system;
+
+create table name(
+name varchar(32)
+);
+
+--姓的个数:572
+select count(distinct substr(name,1,1)) from name;
+--名字的第二个字的个数:1504
+select count(distinct substr(name,2,1)) from name;
+--名字的第三个字的个数:1203
+select count(distinct substr(name,3,1)) from name;
+
+--给3个名字建立3张表
+create table name_1( name1 varchar2(2));
+create table name_2( name2 varchar2(2)); 
+create table name_3( name3 varchar2(2)); 
+
+--选择出数据
+insert into name_1 select distinct substr(name,1,1) from name;
+insert into name_2 select distinct substr(name,2,1) from name;
+insert into name_3 select distinct substr(name,3,1) from name
+         where rownum <=12;
+--创建完整名字表
+create table t_all_name_j114( aname varchar2(10));
+--插入连接出的完整名字数据
+insert into t_all_name_j114(
+    select name1||name2||name3 nameitem 
+    from name_1,name_2,name_3);
+
+select*from t_all_name_j114 where rownum <=10;
+
+--创建新表
+create table t_stud2_j114
+(
+sno varchar(10) ,
+sname varchar(10),
+sex varchar(5)
+constraint ck_sex check(sex='男' or sex='女' or sex='其他'),
+tel varchar(12),
+email varchar(20)
+constraint ck_em check (email like '%@%.%'),
+birthday date
+constraint ck_bir check ((to_char('yyymmdd'))>='19990731' )
+);
+
+
+set timing on
+set serveroutput on
+
+--建立过程
+create or replace procedure pd_student2_j114
+as
+m_id PLS_INTEGER:=1;
+m_ax PLS_INTEGER:=100000000;
+m_sno varchar2(20);
+m_name varchar2(20);
+m_sex varchar2(4);
+m_tel varchar2(20);
+m_email varchar2(20);
+m_birthday date;
+--随机性别
+rand_sex number;
+
+--生日具体日期
+yy PLS_INTEGER;
+mm PLS_INTEGER;
+dd PLS_INTEGER;
+--使用游标获取生成的完整名字
+cursor cur_name is
+   select aname from t_all_name_j114;
+
+begin  
+open cur_name;
+
+for ab in 01..80 loop 
+exit when m_id>m_ax;
+for cd in 01..90 loop  exit when m_id>m_ax;
+for ef in 01..50 loop  exit when m_id>m_ax;
+for gh in 01..32 loop  exit when m_id>m_ax;
+--学号
+m_sno:=substr(to_char(ab),2)||substr(to_char(cd),2)||'15'||substr(to_char(ef),2)||substr(to_char(gh),2);
+ 
+--名字
+fetch cur_name into m_name;
+
+--性别中，男、女占比为99%到99.5%
+ rand_sex:=DBMS_RANDOM.VALUE(1,100);
+        IF rand_sex<=40 THEN m_sex:='男';
+            ELSIF rand_sex<=99 THEN m_sex:='女';
+            ELSE m_sex:='其他';
+        END IF;
+--TEL与E-mail不作要求，但不能全空。
+m_email:=ab||cd||ef||gh||'@qq.com';
+m_tel:=ab||cd||ef||gh;
+
+-- 生日
+yy:=dbms_random.value(1994,1999);
+IF yy<1999 THEN 
+    mm:=dbms_random.value(1,12);
+    ELSE mm:=dbms_random.value(1,7);
+END IF;
+dd:=dbms_random.value(1,28);
+ 
+--组合完整生日
+m_birthday:=TO_DATE(yy||TO_CHAR(mm,'FM09')||TO_CHAR(dd,'FM09'),'yyyymmdd');
+
+--插入数据
+insert into t_stud2_j114(sno,sname,sex,tel,email,birthday)
+         values(m_sno,m_name,m_sex,m_tel,m_email,m_birthday);
+
+m_id:=m_id+1;
+
+end loop;
+end loop;
+end loop;
+end loop;
+close cur_name;
+end;
+.
+/
+
+exec pd_student2_j114;
+--select* from t_stud2_j114;
+
+--2．分别测试stud有主键与没有主键情形下生成记录的时间。
+--没有主键时候生成记录所需时间：
+--加入主键约束
+drop table t_stud2_j114;
+create table t_stud2_j114
+(
+sno varchar(10) ,
+sname varchar(10) primary key,
+sex varchar(5)
+constraint ck_sex check(sex='男' or sex='女' or sex='其他'),
+tel varchar(12),
+email varchar(20)
+constraint ck_em check (email like '%@%.%'),
+birthday date
+constraint ck_bir check ((to_char('yyymmdd'))>='19990731' )
+);
+
+exec pd_student2_j114;
+--生成记录所需时间:
+
+--3．建立基于name的索引index_name，
+--测试建立的时间与建立索引前后查询某一姓名及某一姓的时间长度。
+-- --4．测试索引index_name建立前后，分姓（简单地理解为姓名的第1，2位）的记录数统计时间。
+
+select * from t_stud2_j114 where sname ='曹红志';
+select * from t_stud2_j114 where substr(sname,1,1) ='曹';
+select count(distinct substr(sname,1,1)) from t_stud2_j114;
+
+--建立索引
+create index idx_stud2_aname_j114 on t_stud2_j114(sname);
+
+--建立索引后查询时间
+
+select * from t_stud2_j114 where sname ='曹红志';
+select * from t_stud2_j114 where substr(sname,1,1) ='曹';
+select count(distinct substr(sname,1,1)) from t_stud2_j114;
+
+--5．按学号首位建立10个分区分别为part_0到part_9，
+--测试建立分区前后分首位统计人数与分专业（EF位）统计人数的时间差别。
+ALTER TABLE t_stud2_j114 ADD partid AS (substr(sno,1,1));
+DROP TABLE t_stud2_part_j114;
+CREATE TABLE t_stud2_part_j114(
+    sno,
+    sname,
+    sex,
+    tel,
+    email,
+    birthday,
+    partid
+)
+PARTITION BY LIST(partid)(
+    PARTITION part_0 values('0'),
+    PARTITION part_1 values('1'),
+    PARTITION part_2 values('2'),
+    PARTITION part_3 values('3'),
+    PARTITION part_4 values('4'),
+    PARTITION part_5 values('5'),
+    PARTITION part_6 values('6'),
+    PARTITION part_7 values('7'),
+    PARTITION part_8 values('8'),
+    PARTITION part_9 values('9')
+)
+AS SELECT sno,sname,sex,tel,email,birthday,partid FROM t_stud2_j114;
+
+--分首位统计人数
+select count(*) from t_stud2_j114 group by (substr(sno,1,1));
+select count(*) from t_stud2_part_j114 group by (substr(sno,1,1));
+
+--分专业统计人数
+select count(*) from t_stud2_j114 group by (substr(sno,7,2));
+select count(*) from t_stud2_part_j114 group by (substr(sno,7,2));
+
+--实验四
+--1．建立对应3GB大小的外部文件的tablespace tabspace_????
+create tablespace tabspace_j114
+    datafile 'C:\Program Files\Oracle\stud001.dbf' size 3GB
+    default storage( initial 10M
+                             next 10M
+                             minextents 1
+                             maxextents 10
+                             pctincrease 20)              
+     online;
+
+--2．重建MAJOR_????与STUD_????，指定存于建立的tabspace_????中，
+create table t_major_j114
+(
+mno varchar(10) primary key,
+mname varchar(20),
+loc varchar(10)
+constraint ck_loc check (loc = '主校区'or loc ='南校区'or loc = '新校区'or loc ='铁道校区'or loc ='湘雅校区'),
+mdean varchar(10)
+)
+ tablespace tabspace_j114;
+
+create table t_stud_j114
+(
+sno varchar(10) primary key,
+sname varchar(10),
+sex varchar(5)
+constraint ck_sex check(sex='男' or sex='女' or sex='其他'),
+tel varchar(12),
+email varchar(20)
+constraint ck_em check (email like '%@%.%'),
+birthday date
+constraint ck_bir check ((to_char('yyymmdd'))>='19990731' ),
+mno varchar(10),
+majorno varchar(2),
+constraint fk_ms foreign key (majorno) references t_major_j114(mno),
+constraint fk_mno check(majorno= substr(sno,3,2))
+)
+ tablespace tabspace_j114;
+
+--3．重新产生样本值，包括千万级数据的STUD表，看是否有性能上的提升。
+drop procedure pd_student2_j114;
+drop table t_stud2_j114;
+
+--创建新表
+create table t_stud2_j114
+(
+sno varchar(10) ,
+sname varchar(10),
+sex varchar(5)
+constraint ck_sex1 check(sex='男' or sex='女' or sex='其他'),
+tel varchar(12),
+email varchar(20)
+constraint ck_em1 check (email like '%@%.%'),
+birthday date
+constraint ck_bir1 check ((to_char('yyymmdd'))>='19990731' )
+)
+tablespace tabspace_j114;
+
+set timing on
+set serveroutput on
+
+--建立过程
+create or replace procedure pd_student2_j114
+as
+m_id PLS_INTEGER:=1;
+m_ax PLS_INTEGER:=100;
+m_sno varchar2(20);
+m_name varchar2(20);
+m_sex varchar2(4);
+m_tel varchar2(20);
+m_email varchar2(20);
+m_birthday date;
+--随机性别
+rand_sex number;
+
+--学号格式
+
+--生日具体日期
+yy PLS_INTEGER;
+mm PLS_INTEGER;
+dd PLS_INTEGER;
+--使用游标获取生成的完整名字
+cursor cur_name is
+   select aname from t_all_name_j114;
+
+begin  
+open cur_name;
+
+for ab in 01..80 loop exit when m_id>m_ax;
+for cd in 01..90 loop  exit when m_id>m_ax;
+for ef in 01..50 loop  exit when m_id>m_ax;
+for gh in 01..32 loop  exit when m_id>m_ax;
+--学号
+m_sno:=substr(to_char(ab),2)||substr(to_char(cd),2)||'15'||substr(to_char(ef),2)||substr(to_char(gh),2);
+ 
+--名字
+fetch cur_name into m_name;
+
+--性别中，男、女占比为99%到99.5%
+ rand_sex:=DBMS_RANDOM.VALUE(1,100);
+        IF rand_sex<=40 THEN m_sex:='男';
+            ELSIF rand_sex<=99 THEN m_sex:='女';
+            ELSE m_sex:='其他';
+        END IF;
+--TEL与E-mail不作要求，但不能全空。
+m_email:=ab||cd||ef||gh||'@qq.com';
+m_tel:=ab||cd||ef||gh;
+
+-- 生日
+yy:=dbms_random.value(1994,1999);
+IF yy<1999 THEN 
+    mm:=dbms_random.value(1,12);
+    ELSE mm:=dbms_random.value(1,7);
+   -- dd:=dbms_random.value(1,28);
+END IF;
+dd:=dbms_random.value(1,28);
+ 
+--组合完整生日
+m_birthday:=TO_DATE(yy||TO_CHAR(mm,'FM09')||TO_CHAR(dd,'FM09'),'yyyymmdd');
+
+--插入数据
+insert into t_stud2_j114(sno,sname,sex,tel,email,birthday)
+         values(m_sno,m_name,m_sex,m_tel,m_email,m_birthday);
+
+m_id:=m_id+1;
+
+end loop;
+end loop;
+end loop;
+end loop;
+close cur_name;
+end;
+.
+/
+
+exec pd_student2_j114;
+
+--4．用EXP导出数据与IMP导入数据，请作多种尝试，直到成功！
+--在cmd中操作，将数据导出
+exp system/system@orcl file=C:student.dmp full=y
+imp system/system@orcl file=c:\student.dmp
+
+--5．尝试对系统表空间user及自定义表空间tabspace_????进行备份与恢复
+
+sqlplus / as sysdba
+conect system/syestem as sysdba 
+--以archive模式启动数据库
+shutdown immediate;
+--启动mount阶段
+startup mount;
+--设置归档
+alter database archivelog; 
+ --打开数据库
+alter database open;
+
+--创建恢复目录所用的表空间
+create tablespace rman_j114 datafile'c:\rman1_j114.dbf' size 200M;
+--创建rman用户并授权
+create user rman_j114 identified by u123 
+   default tablespace rman_j114 
+   temporary tablespace temp;
+grant connect,recovery_catalog_owner,resource to rman_j114;
+
+alter tablespace users begin backup;
+alter tablespace users end backup;
+alter tablespace tabspace_j114 begin backup;
+alter tablespace system begin backup;
+
+--RMAN target/
+--backup tablespace users;
+--backup tablespace tabspace_j114;
+
+alter tablespace users offline;
+alter database tabspace_j114 offline;
+
+--RMAN catalog rman_j114/u123 target orcl
+--restore tablespace users;
+--recover tablespace users;
+--restore tablespace tabspace_j114;
+--recover tablespace tabspace_j114;
+
+alter tablespace users online;
+alter tablespace tabspace_j114 online;
+
+--6．登录DBA用户system，通过cat字典入口，
+--找到以DBA_开头的相关数据字典，并且每个对象显示5条记录（SQL生成SQL）。
+spool d:\DBA_oraexp.txt;
+select 'select * from '||tname||' where rownum<=5;' from publicsyn where tname like 'DBA_%';    
+spool off;
+--@ C:\DBA_oraexp.txt;
+
+--7．通过查找自己用户下的触发器字典，
+--生成代码将所有触发器的状态改为disable并执行。
+--再生成代码，将状态为disable的触发器的状态改为enable，并执行。
+connect u_jsj_114/u123456;
+--查找触发器
+select  trigger_name from user_triggers where table_owner=upper('u_jsj_114');
+--更改触发器
+select  'alter trigger '||trigger_name|| ' disable;' from user_triggers where table_owner=upper('u_jsj_114');
+alter trigger ATTEND_STUD_J114 disable;
+select  'alter trigger '||trigger_name|| ' enable;' from user_triggers where table_owner=upper('u_jsj_114');
+alter trigger ATTEND_STUD_J114 enable;
